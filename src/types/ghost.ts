@@ -1,3 +1,16 @@
+export interface GhostAuthor {
+  id: string;
+  name: string;
+  slug: string;
+  profile_image?: string;
+  bio?: string;
+  website?: string;
+  location?: string;
+  facebook?: string;
+  twitter?: string;
+  url: string;
+}
+
 export interface GhostTag {
   id: string;
   name: string;
@@ -30,8 +43,8 @@ export interface GhostPost {
   custom_template?: string;
   canonical_url?: string;
   tags?: GhostTag[];
-  authors?: any[];
-  primary_author?: any;
+  authors?: GhostAuthor[];
+  primary_author?: GhostAuthor;
   primary_tag?: GhostTag;
   url: string;
   excerpt?: string;

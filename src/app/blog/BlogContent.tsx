@@ -2,21 +2,20 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { getPosts, getTags } from '@/lib/ghost';
 import type { GhostTag, GhostPost } from '@/types/ghost';
 import debounce from 'lodash/debounce';
 import Typewriter from 'typewriter-effect';
 import PostCard from '@/components/PostCard';
 
-export default function BlogContent({ 
+export const BlogContent = ({ 
   initialPosts, 
   initialTags 
 }: { 
   initialPosts: GhostPost[];
   initialTags: GhostTag[];
-}) {
-  const [posts, setPosts] = useState<GhostPost[]>(initialPosts);
-  const [tags, setTags] = useState<GhostTag[]>(initialTags);
+}): JSX.Element => {
+  const [posts] = useState<GhostPost[]>(initialPosts);
+  const [tags] = useState<GhostTag[]>(initialTags);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -27,7 +26,6 @@ export default function BlogContent({
   const searchRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
 
-  // Check if first time visitor
   useEffect(() => {
     const hasVisited = localStorage.getItem('hasVisitedBefore');
     if (hasVisited) {
@@ -37,28 +35,26 @@ export default function BlogContent({
     }
   }, []);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setIsSubscribed(true);
-    // TODO: Implement actual newsletter subscription
     setTimeout(() => setShowOnboarding(false), 2000);
   };
 
-  // Fix the debounced search handler
-  const debouncedSetSearchQuery = useCallback(
-    debounce((value: string) => {
-      setSearchQuery(value);
-    }, 300),
-    []
+  const handleSearch = useCallback((value: string): void => {
+    setSearchQuery(value);
+  }, []);
+
+  const debouncedSearch = useMemo(
+    () => debounce(handleSearch, 300),
+    [handleSearch]
   );
 
-  // Fix the category handler
-  const handleCategoryChange = useCallback((category: string) => {
+  const handleCategoryChange = useCallback((category: string): void => {
     setSelectedCategory(category);
     setIsCategoryDropdownOpen(false);
   }, []);
 
-  // Memoized filtered posts
   const filteredPosts = useMemo(() => {
     return posts.filter(post => {
       const matchesCategory = selectedCategory === "All Posts" || 
@@ -71,28 +67,15 @@ export default function BlogContent({
     });
   }, [posts, selectedCategory, searchQuery]);
 
-  // Memoized popular tags
-  const popularTags = useMemo(() => {
-    return tags
-      .filter((tag: GhostTag) => tag.count && tag.count > 0)
-      .slice(0, 10)
-      .map((tag: GhostTag) => ({
-        name: tag.name,
-        slug: tag.slug,
-        count: tag.count
-      }));
-  }, [tags]);
-
-  // Fix the click outside handler
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent): void => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchFocused(false);
       }
       if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
         setIsCategoryDropdownOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -122,7 +105,7 @@ export default function BlogContent({
               >
                 <h2 className="text-3xl font-press-start-2p mb-4 h-12">
                   <Typewriter
-                    onInit={(typewriter) => {
+                    onInit={(typewriter): void => {
                       typewriter
                         .typeString('JOIN THE REVOLUTION')
                         .pauseFor(1500)
@@ -134,7 +117,7 @@ export default function BlogContent({
                 </h2>
                 <div className="text-green-500/80 h-12 text-lg">
                   <Typewriter
-                    onInit={(typewriter) => {
+                    onInit={(typewriter): void => {
                       typewriter
                         .pauseFor(4000)
                         .typeString('A new publication covering the business of Gen AI. Sign up for our daily newsletter')
@@ -148,7 +131,7 @@ export default function BlogContent({
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e): void => setEmail(e.target.value)}
                       placeholder="Enter your email..."
                       className="w-full bg-black border-2 border-green-500 px-4 py-3 text-green-500 placeholder-green-500/50"
                       required
@@ -173,7 +156,7 @@ export default function BlogContent({
                 
                 <div className="flex justify-center">
                   <button
-                    onClick={() => setShowOnboarding(false)}
+                    onClick={(): void => setShowOnboarding(false)}
                     className="text-sm text-green-500/50 hover:text-green-500 transition-colors"
                   >
                     Skip for now →
@@ -208,11 +191,10 @@ export default function BlogContent({
           />
         </header>
 
-        {/* Navigation Bar */}
         <div className="flex justify-between items-center mb-12">
           <div className="relative" ref={categoryRef}>
             <button
-              onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+              onClick={(): void => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
               className="border border-green-500 px-4 py-2 flex items-center space-x-2 hover:bg-green-500/5"
             >
               <span>📅 WEEKLY COLUMN</span>
@@ -227,7 +209,7 @@ export default function BlogContent({
                 {tags.map((tag) => (
                   <button
                     key={tag.id}
-                    onClick={() => setSelectedCategory(tag.name)}
+                    onClick={(): void => handleCategoryChange(tag.name)}
                     className="w-full px-4 py-2 text-left hover:bg-green-500/10 text-sm"
                   >
                     {tag.name}
@@ -242,44 +224,19 @@ export default function BlogContent({
               type="text"
               placeholder="Search by tags or title..."
               className="w-64 bg-black border border-green-500 px-4 py-2 text-green-500 placeholder-green-500/50"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
+              onChange={(e): void => debouncedSearch(e.target.value)}
+              onFocus={(): void => setIsSearchFocused(true)}
             />
             <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500/50">⌘K</span>
           </div>
         </div>
 
-        {/* Latest Posts Section */}
-        <section className="mb-16">
-          <h2 className="text-xl font-mono mb-6 flex items-center space-x-2">
-            <span>🚀</span>
-            <span>LATEST POSTS</span>
-          </h2>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            layout
-          >
-            <AnimatePresence mode="wait">
-              {filteredPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </section>
-
-        {/* Trending Section */}
-        <section>
-          <h2 className="text-xl font-mono mb-6 flex items-center space-x-2">
-            <span>📈</span>
-            <span>TRENDING THIS WEEK</span>
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.slice(0, 3).map((post) => (
-              <PostCard key={`trending-${post.id}`} post={post} />
-            ))}
-          </div>
-        </section>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredPosts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
       </motion.div>
     </main>
   );
-} 
+}; 

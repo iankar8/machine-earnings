@@ -5,11 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "heroku-postbuild": "npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -20,7 +19,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@tryghost/content-api": "^1.11.20",
     "@types/lodash": "^4.17.13",
-    "framer-motion": "^10.16.16",
+    "framer-motion": "^10.18.0",
     "lodash": "^4.17.21",
     "next": "^14.0.4",
     "react": "^18.2.0",
@@ -51,13 +50,6 @@
     "tailwindcss": "^3.3.6",
     "typescript": "^5.3.3"
   },
-  "engines": {
-    "node": "20.x",
-    "npm": "10.x"
-  },
-  "cacheDirectories": [
-    ".next/cache"
-  ],
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
