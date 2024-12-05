@@ -1,0 +1,70 @@
+{
+  "name": "machine-earnings",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "prepare": "husky install",
+    "heroku-postbuild": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "cypress run",
+    "cypress:open": "cypress open"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@tryghost/content-api": "^1.11.20",
+    "@types/lodash": "^4.17.13",
+    "framer-motion": "^10.16.16",
+    "lodash": "^4.17.21",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typewriter-effect": "^2.21.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "autoprefixer": "^10.4.16",
+    "cypress": "^13.6.1",
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
+  "cacheDirectories": [
+    ".next/cache"
+  ],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
