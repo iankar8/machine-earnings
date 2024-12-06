@@ -5,7 +5,14 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { expect, jest, describe, it, beforeEach, afterEach } from '@jest/globals';
 import type { SpyInstance } from 'jest-mock';
 import type { RenderResult } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
+import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers';
+
+declare global {
+  namespace jest {
+    interface Matchers<R = void> extends TestingLibraryMatchers<typeof expect.stringContaining, R> {}
+  }
+}
 
 const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
