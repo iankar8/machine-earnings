@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, fireEvent, within } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import '@testing-library/jest-dom';
 import type { SpyInstance } from 'jest-mock';
@@ -28,7 +28,8 @@ describe('ErrorBoundary', () => {
 
     const view = within(container);
     const element = view.getByText('Test content');
-    expect(element).toBeInTheDocument();
+    expect(element).toBeDefined();
+    expect(element instanceof HTMLElement).toBe(true);
   });
 
   it('renders error UI when there is an error', () => {
@@ -41,8 +42,8 @@ describe('ErrorBoundary', () => {
     const view = within(container);
     const titleElement = view.getByText('Something went wrong');
     const errorElement = view.getByText('Test error');
-    expect(titleElement).toBeInTheDocument();
-    expect(errorElement).toBeInTheDocument();
+    expect(titleElement instanceof HTMLElement).toBe(true);
+    expect(errorElement instanceof HTMLElement).toBe(true);
   });
 
   it('reloads page when reload button is clicked', () => {
@@ -60,6 +61,7 @@ describe('ErrorBoundary', () => {
 
     const view = within(container);
     const button = view.getByText('Reload page');
+    expect(button instanceof HTMLElement).toBe(true);
     fireEvent.click(button);
     expect(reloadMock).toHaveBeenCalled();
   });
