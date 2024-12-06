@@ -1,20 +1,22 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import type { Screen } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import '@testing-library/jest-dom';
+import type { SpyInstance } from 'jest-mock';
 
 const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
 };
 
 describe('ErrorBoundary', () => {
+  let consoleSpy: SpyInstance;
+
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    consoleSpy.mockRestore();
   });
 
   it('renders children when there is no error', () => {
@@ -24,8 +26,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const element = screen.getByText('Test content') as HTMLElement;
-    expect(element).toBeInTheDocument();
+    expect(screen.getByText('Test content')).toBeInTheDocument();
   });
 
   it('renders error UI when there is an error', () => {
@@ -35,10 +36,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const titleElement = screen.getByText('Something went wrong') as HTMLElement;
-    const errorElement = screen.getByText('Test error') as HTMLElement;
-    expect(titleElement).toBeInTheDocument();
-    expect(errorElement).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(screen.getByText('Test error')).toBeInTheDocument();
   });
 
   it('reloads page when reload button is clicked', () => {
@@ -54,8 +53,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const button = screen.getByText('Reload page') as HTMLButtonElement;
-    fireEvent.click(button);
+    fireEvent.click(screen.getByText('Reload page'));
     expect(reloadMock).toHaveBeenCalled();
   });
 }); 

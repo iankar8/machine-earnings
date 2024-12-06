@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { getPost } from '@/lib/ghost';
-import type { Post } from '@/types/ghost';
 
 interface BlogPostPageProps {
   params: {
