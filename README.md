@@ -1,12 +1,27 @@
 # Machine Earnings
 
-A retro-styled tech blog platform built with Next.js 14 and Ghost CMS.
+A retro-styled tech platform exploring the business of Generative AI.
+
+## Usage Rights
+
+This project is licensed under AGPL-3.0 which means:
+
+✅ You CAN:
+- View and study the code
+- Fork for personal, non-commercial projects
+- Suggest improvements via pull requests
+- Share the code publicly with the same license
+
+❌ You CANNOT:
+- Use any part of this code for commercial purposes
+- Create closed-source versions
+- Use in your business without making your modifications public
+- Remove or modify this license
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Animation**: Framer Motion
-- **CMS**: Ghost (Headless)
 - **Styling**: Custom retro theme with green-on-black aesthetic
 
 ## Development
@@ -16,18 +31,12 @@ A retro-styled tech blog platform built with Next.js 14 and Ghost CMS.
 npm install
 ```
 
-2. Set up environment variables:
-```bash
-cp .env.example .env.local
-# Edit .env.local with your Ghost credentials
-```
-
-3. Run the development server:
+2. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000)
+3. Open [http://localhost:3000](http://localhost:3000)
 
 ## Features
 

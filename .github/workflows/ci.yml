@@ -47,7 +47,7 @@ jobs:
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
-          vercel-token: ${{ secrets.ZFWAZFF4KDeAwPfU0gt66xsy }}
-          vercel-org-id: ${{ secrets.team_MFxXZ7A8QT8xrL1AtirsBueo }}
-          vercel-project-id: ${{ secrets.prj_HNXFuoTYxr4ofgiQh5FpSqKfxO3Y }}
+          vercel-token: ${{secrets.ZFWAZFF4KDeAwPfU0gt66xsy}}
+          vercel-org-id: ${{secrets.team_MFxXZ7A8QT8xrL1AtirsBueo}}
+          vercel-project-id: ${{secrets.prj_HNXFuoTYxr4ofgiQh5FpSqKfxO3Y}}
           vercel-args: '--prod'
