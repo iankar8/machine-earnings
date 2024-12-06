@@ -28,7 +28,7 @@ jobs:
           npx tsc --noEmit
         
       - name: Run tests
-        run: npm run test -- --verbose
+        run: npm run test -- --verbose --no-warnings
         
       - name: Run E2E tests
         run: |
