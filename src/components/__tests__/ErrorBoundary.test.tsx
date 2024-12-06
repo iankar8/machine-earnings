@@ -32,7 +32,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('SYSTEM ERROR')).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(screen.getByText('Test error')).toBeInTheDocument();
   });
 
@@ -49,7 +49,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    fireEvent.click(screen.getByText('RELOAD SYSTEM'));
+    fireEvent.click(screen.getByText('Reload page'));
     expect(reloadMock).toHaveBeenCalled();
   });
 }); 
