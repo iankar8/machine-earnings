@@ -1,26 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-namespace */
 import React from 'react';
 import { render, fireEvent, within } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import '@testing-library/jest-dom';
-import { expect } from '@jest/globals';
-
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeInTheDocument(): R;
-      toHaveBeenCalled(): R;
-    }
-  }
-}
+import { expect, jest, describe, it, beforeEach, afterEach } from '@jest/globals';
+import type { SpyInstance } from 'jest-mock';
+import type { RenderResult } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
 };
 
 describe('ErrorBoundary', () => {
-  let consoleSpy: jest.SpyInstance;
+  let consoleSpy: SpyInstance;
+  let renderResult: RenderResult;
 
   beforeEach(() => {
     consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -28,30 +20,29 @@ describe('ErrorBoundary', () => {
 
   afterEach(() => {
     consoleSpy.mockRestore();
+    renderResult?.unmount?.();
   });
 
   it('renders children when there is no error', () => {
-    const { container } = render(
+    renderResult = render(
       <ErrorBoundary>
         <div>Test content</div>
       </ErrorBoundary>
     );
 
-    const view = within(container);
-    const element = view.getByText('Test content');
+    const element = renderResult.getByText('Test content');
     expect(element).toBeInTheDocument();
   });
 
   it('renders error UI when there is an error', () => {
-    const { container } = render(
+    renderResult = render(
       <ErrorBoundary>
         <ErrorComponent />
       </ErrorBoundary>
     );
 
-    const view = within(container);
-    const titleElement = view.getByText('Something went wrong');
-    const errorElement = view.getByText('Test error');
+    const titleElement = renderResult.getByText('Something went wrong');
+    const errorElement = renderResult.getByText('Test error');
     expect(titleElement).toBeInTheDocument();
     expect(errorElement).toBeInTheDocument();
   });
@@ -63,14 +54,13 @@ describe('ErrorBoundary', () => {
       writable: true,
     });
 
-    const { container } = render(
+    renderResult = render(
       <ErrorBoundary>
         <ErrorComponent />
       </ErrorBoundary>
     );
 
-    const view = within(container);
-    const button = view.getByText('Reload page');
+    const button = renderResult.getByText('Reload page');
     fireEvent.click(button);
     expect(reloadMock).toHaveBeenCalled();
   });
