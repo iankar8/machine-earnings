@@ -8,7 +8,16 @@ const api = GhostContentAPI({
   url: config.ghostUrl,
   key: config.ghostKey,
   version: config.ghostVersion,
-});
+}) as {
+  posts: {
+    browse: (options: { limit: string; include?: string[] }) => Promise<Post[]>;
+    read: (options: { slug: string; include?: string[] }) => Promise<Post>;
+  };
+  tags: {
+    browse: (options: { limit: string }) => Promise<Tag[]>;
+    read: (options: { slug: string }) => Promise<Tag>;
+  };
+};
 
 export async function getPosts(): Promise<Post[]> {
   const posts = await api.posts.browse({

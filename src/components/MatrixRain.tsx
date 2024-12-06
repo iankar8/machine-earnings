@@ -58,7 +58,7 @@ export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Ele
       ctx.fillStyle = '#0F0';
       ctx.font = '20px monospace';
 
-      dropsRef.current.forEach((drop, i) => {
+      dropsRef.current.forEach(drop => {
         const char = String.fromCharCode(0x30A0 + Math.random() * 96);
         ctx.fillText(char, drop.x, drop.y);
 
