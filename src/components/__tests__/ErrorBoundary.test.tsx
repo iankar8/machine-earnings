@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, within } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { expect, jest, describe, it, beforeEach, afterEach } from '@jest/globals';
 import type { SpyInstance } from 'jest-mock';
