@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
+import '@testing-library/jest-dom';
 
-const ErrorComponent = () => {
+const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
 };
 
@@ -22,7 +23,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('Test content')).toBeInTheDocument();
+    const element = screen.getByText('Test content');
+    expect(element).toBeInTheDocument();
   });
 
   it('renders error UI when there is an error', () => {
@@ -32,8 +34,10 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText('Test error')).toBeInTheDocument();
+    const titleElement = screen.getByText('Something went wrong');
+    const errorElement = screen.getByText('Test error');
+    expect(titleElement).toBeInTheDocument();
+    expect(errorElement).toBeInTheDocument();
   });
 
   it('reloads page when reload button is clicked', () => {
@@ -49,7 +53,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    fireEvent.click(screen.getByText('Reload page'));
+    const button = screen.getByText('Reload page');
+    fireEvent.click(button);
     expect(reloadMock).toHaveBeenCalled();
   });
 }); 
