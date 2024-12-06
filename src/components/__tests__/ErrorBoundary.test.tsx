@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-namespace */
 import React from 'react';
 import { render, fireEvent, within } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
