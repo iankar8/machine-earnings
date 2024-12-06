@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface Props {
-  onComplete: () => void;
+  onComplete?: () => void;
   shouldFreeze?: boolean;
 }
 
-export const MatrixRain: React.FC<Props> = ({ onComplete, shouldFreeze = false }) => {
+interface Drop {
+  x: number;
+  y: number;
+  char: string;
+  speed: number;
+}
+
+export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isComplete, setIsComplete] = useState(false);
+  const dropsRef = useRef<Drop[]>([]);
+  const animationFrameRef = useRef<number>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,85 +24,79 @@ export const MatrixRain: React.FC<Props> = ({ onComplete, shouldFreeze = false }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const fontSize = 20;
-    const columns = canvas.width / fontSize;
-    const drops: number[] = [];
-    const chars = "01";
-    const frozenChars: { [key: string]: string } = {};
-    let frameCount = 0;
-
-    for (let i = 0; i < columns; i++) {
-      drops[i] = 1;
-    }
-
-    function draw() {
-      frameCount++;
-      
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.font = `bold ${fontSize}px Courier, monospace`;
-      ctx.textAlign = 'center';
-
-      for (let i = 0; i < drops.length; i++) {
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        if (shouldFreeze && frozenChars[`${x},${y}`]) {
-          ctx.fillStyle = '#0f0';
-          ctx.fillText(frozenChars[`${x},${y}`], x, y);
-          continue;
-        }
-
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        
-        if (shouldFreeze) {
-          frozenChars[`${x},${y}`] = text;
-        }
-
-        const gradient = ctx.createLinearGradient(x, y - fontSize * 3, x, y);
-        gradient.addColorStop(0, 'rgba(0, 255, 0, 0)');
-        gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.5)');
-        gradient.addColorStop(1, '#0f0');
-        
-        ctx.fillStyle = gradient;
-        ctx.fillText(text, x, y);
-
-        if (Math.random() > 0.95) {
-          ctx.fillStyle = '#fff';
-          ctx.fillText(text, x, y);
-        }
-
-        if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        
-        if (!shouldFreeze) {
-          drops[i]++;
-        }
-      }
-
-      if (frameCount === 60 && !isComplete) {
-        setIsComplete(true);
-        onComplete();
-      }
-
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-
-    const handleResize = () => {
+    const resizeCanvas = () => {
+      if (!canvas || !ctx) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      initDrops();
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [onComplete, shouldFreeze, isComplete]);
+    const initDrops = () => {
+      if (!canvas) return;
+      const drops: Drop[] = [];
+      const columns = Math.floor(canvas.width / 20);
+      
+      for (let i = 0; i < columns; i++) {
+        drops.push({
+          x: i * 20,
+          y: Math.random() * canvas.height,
+          char: String.fromCharCode(0x30A0 + Math.random() * 96),
+          speed: Math.random() * 2 + 1,
+        });
+      }
+      dropsRef.current = drops;
+    };
 
-  return <canvas ref={canvasRef} className="fixed inset-0" />;
-}; 
+    const draw = () => {
+      if (!canvas || !ctx) return;
+
+      if (!shouldFreeze) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      ctx.fillStyle = '#0F0';
+      ctx.font = '20px monospace';
+
+      dropsRef.current.forEach((drop, i) => {
+        const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+        ctx.fillText(char, drop.x, drop.y);
+
+        if (!shouldFreeze) {
+          drop.y += drop.speed;
+          if (drop.y > canvas.height) {
+            drop.y = 0;
+            drop.char = String.fromCharCode(0x30A0 + Math.random() * 96);
+          }
+        }
+      });
+
+      if (!shouldFreeze) {
+        animationFrameRef.current = requestAnimationFrame(draw);
+      }
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    draw();
+
+    setTimeout(() => {
+      onComplete?.();
+    }, 2000);
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [shouldFreeze, onComplete]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-full h-full"
+      style={{ zIndex: 0 }}
+    />
+  );
+} 
