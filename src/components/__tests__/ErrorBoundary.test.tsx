@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -31,7 +32,6 @@ describe('ErrorBoundary', () => {
     );
 
     const element = renderResult.getByText('Test content');
-    // @ts-expect-error - jest-dom types are not properly recognized
     expect(element).toBeInTheDocument();
   });
 
@@ -44,9 +44,7 @@ describe('ErrorBoundary', () => {
 
     const titleElement = renderResult.getByText('Something went wrong');
     const errorElement = renderResult.getByText('Test error');
-    // @ts-expect-error - jest-dom types are not properly recognized
     expect(titleElement).toBeInTheDocument();
-    // @ts-expect-error - jest-dom types are not properly recognized
     expect(errorElement).toBeInTheDocument();
   });
 
