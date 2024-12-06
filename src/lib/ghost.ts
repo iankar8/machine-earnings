@@ -1,14 +1,14 @@
 import GhostContentAPI from '@tryghost/content-api';
-import { Post, Tag, GhostAPI } from '@/types/ghost';
+import { Post, Tag } from '@/types/ghost';
 import { getConfig } from '@/utils/config';
 
 const config = getConfig();
 
-const api = new GhostContentAPI({
+const api = GhostContentAPI({
   url: config.ghostUrl,
   key: config.ghostKey,
   version: config.ghostVersion,
-}) as unknown as GhostAPI;
+});
 
 export async function getPosts(): Promise<Post[]> {
   const posts = await api.posts.browse({
