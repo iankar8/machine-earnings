@@ -52,3 +52,7 @@ jobs:
           vercel-org-id: ${{secrets.VERCEL_ORG_ID}}
           vercel-project-id: ${{secrets.VERCEL_PROJECT_ID}}
           vercel-args: '--prod'
+        env:
+          NEXT_PUBLIC_GHOST_URL: ${{ secrets.NEXT_PUBLIC_GHOST_URL }}
+          NEXT_PUBLIC_GHOST_KEY: ${{ secrets.NEXT_PUBLIC_GHOST_KEY }}
+          NEXT_PUBLIC_GHOST_VERSION: "v5.0"
