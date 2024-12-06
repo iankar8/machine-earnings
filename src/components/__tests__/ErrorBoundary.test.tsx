@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import type { Screen } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import '@testing-library/jest-dom';
 
@@ -23,7 +24,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const element = screen.getByText('Test content');
+    const element = screen.getByText('Test content') as HTMLElement;
     expect(element).toBeInTheDocument();
   });
 
@@ -34,8 +35,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const titleElement = screen.getByText('Something went wrong');
-    const errorElement = screen.getByText('Test error');
+    const titleElement = screen.getByText('Something went wrong') as HTMLElement;
+    const errorElement = screen.getByText('Test error') as HTMLElement;
     expect(titleElement).toBeInTheDocument();
     expect(errorElement).toBeInTheDocument();
   });
@@ -53,7 +54,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const button = screen.getByText('Reload page');
+    const button = screen.getByText('Reload page') as HTMLButtonElement;
     fireEvent.click(button);
     expect(reloadMock).toHaveBeenCalled();
   });
