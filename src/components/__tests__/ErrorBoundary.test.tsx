@@ -5,6 +5,15 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import '@testing-library/jest-dom';
 import { expect } from '@jest/globals';
 
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeInTheDocument(): R;
+      toHaveBeenCalled(): R;
+    }
+  }
+}
+
 const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
 };
