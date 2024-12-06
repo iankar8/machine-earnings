@@ -31,6 +31,7 @@ describe('ErrorBoundary', () => {
     );
 
     const element = renderResult.getByText('Test content');
+    // @ts-expect-error - jest-dom types are not properly recognized
     expect(element).toBeInTheDocument();
   });
 
@@ -43,7 +44,9 @@ describe('ErrorBoundary', () => {
 
     const titleElement = renderResult.getByText('Something went wrong');
     const errorElement = renderResult.getByText('Test error');
+    // @ts-expect-error - jest-dom types are not properly recognized
     expect(titleElement).toBeInTheDocument();
+    // @ts-expect-error - jest-dom types are not properly recognized
     expect(errorElement).toBeInTheDocument();
   });
 
