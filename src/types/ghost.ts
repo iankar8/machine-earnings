@@ -1,63 +1,26 @@
-export interface GhostAuthor {
+export interface Post {
   id: string;
-  name: string;
   slug: string;
-  profile_image?: string;
-  bio?: string;
-  website?: string;
-  location?: string;
-  facebook?: string;
-  twitter?: string;
-  url: string;
-}
-
-export interface GhostTag {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  feature_image?: string;
-  visibility: string;
-  meta_title?: string;
-  meta_description?: string;
-  url: string;
-  count?: number;
-}
-
-export interface GhostPost {
-  id: string;
-  uuid: string;
   title: string;
-  slug: string;
-  html?: string;
-  comment_id?: string;
+  excerpt: string;
+  html: string;
   feature_image?: string;
-  featured: boolean;
-  visibility: string;
-  created_at: string;
-  updated_at: string;
-  published_at: string;
-  custom_excerpt?: string;
-  codeinjection_head?: string;
-  codeinjection_foot?: string;
-  custom_template?: string;
-  canonical_url?: string;
-  tags?: GhostTag[];
-  authors?: GhostAuthor[];
-  primary_author?: GhostAuthor;
-  primary_tag?: GhostTag;
-  url: string;
-  excerpt?: string;
-  reading_time?: number;
-  access?: boolean;
-  comments?: boolean;
-  og_image?: string;
-  og_title?: string;
-  og_description?: string;
-  twitter_image?: string;
-  twitter_title?: string;
-  twitter_description?: string;
-  meta_title?: string;
-  meta_description?: string;
-  email_subject?: string;
+  tags?: Tag[];
+}
+
+export interface Tag {
+  id: string;
+  slug: string;
+  name: string;
+}
+
+export interface GhostAPI {
+  posts: {
+    browse: (options: { limit: string; include?: string[] }) => Promise<Post[]>;
+    read: (options: { slug: string; include?: string[] }) => Promise<Post>;
+  };
+  tags: {
+    browse: (options: { limit: string }) => Promise<Tag[]>;
+    read: (options: { slug: string }) => Promise<Tag>;
+  };
 }

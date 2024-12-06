@@ -7,7 +7,7 @@ const requiredEnvVars = [
 
 export type EnvVar = typeof requiredEnvVars[number];
 
-export function validateConfig() {
+export function validateConfig(): void {
   const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
   
   if (missingVars.length > 0) {
