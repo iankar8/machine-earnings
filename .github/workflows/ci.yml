@@ -28,7 +28,7 @@ jobs:
           npx tsc --noEmit
         
       - name: Run tests
-        run: npm run test -- --verbose --no-warnings
+        run: npm run test -- --verbose --detectOpenHandles --forceExit
         
       - name: Run E2E tests
         run: |
