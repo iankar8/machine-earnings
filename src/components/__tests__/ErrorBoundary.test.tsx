@@ -6,13 +6,6 @@ import { expect, jest, describe, it, beforeEach, afterEach } from '@jest/globals
 import type { SpyInstance } from 'jest-mock';
 import type { RenderResult } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers';
-
-declare global {
-  namespace jest {
-    interface Matchers<R = void> extends TestingLibraryMatchers<typeof expect.stringContaining, R> {}
-  }
-}
 
 const ErrorComponent = (): JSX.Element => {
   throw new Error('Test error');
@@ -39,6 +32,7 @@ describe('ErrorBoundary', () => {
     );
 
     const element = renderResult.getByText('Test content');
+    // @ts-ignore - jest-dom types are not properly recognized
     expect(element).toBeInTheDocument();
   });
 
@@ -51,7 +45,9 @@ describe('ErrorBoundary', () => {
 
     const titleElement = renderResult.getByText('Something went wrong');
     const errorElement = renderResult.getByText('Test error');
+    // @ts-ignore - jest-dom types are not properly recognized
     expect(titleElement).toBeInTheDocument();
+    // @ts-ignore - jest-dom types are not properly recognized
     expect(errorElement).toBeInTheDocument();
   });
 
