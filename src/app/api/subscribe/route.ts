@@ -5,7 +5,17 @@ import { cookies } from 'next/headers'
 
 const SUBSCRIBERS_FILE = path.join(process.cwd(), 'subscribers.json')
 
-async function readSubscribers() {
+interface Subscriber {
+  timestamp: string;
+  email: string;
+  subscriptions: {
+    weekly: boolean;
+    essays: boolean;
+    community: boolean;
+  }
+}
+
+async function readSubscribers(): Promise<Subscriber[]> {
   try {
     const content = await fs.readFile(SUBSCRIBERS_FILE, 'utf-8')
     return JSON.parse(content)
@@ -14,7 +24,7 @@ async function readSubscribers() {
   }
 }
 
-async function writeSubscribers(subscribers: any[]) {
+async function writeSubscribers(subscribers: Subscriber[]): Promise<void> {
   await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(subscribers, null, 2))
 }
 
@@ -23,7 +33,7 @@ export async function POST(req: Request) {
     const { email, subscriptions } = await req.json()
     
     // Format data
-    const newSubscriber = {
+    const newSubscriber: Subscriber = {
       timestamp: new Date().toISOString(),
       email,
       subscriptions: {
@@ -37,7 +47,7 @@ export async function POST(req: Request) {
     const subscribers = await readSubscribers()
     
     // Check if email already exists
-    const existingSubscriber = subscribers.find(sub => sub.email === email)
+    const existingSubscriber = subscribers.find((sub: Subscriber) => sub.email === email)
     if (existingSubscriber) {
       return NextResponse.json(
         { error: 'Email already registered' },
