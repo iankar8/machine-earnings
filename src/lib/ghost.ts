@@ -1,16 +1,26 @@
 import GhostContentAPI from '@tryghost/content-api';
 import { Post, Tag } from '@/types/ghost';
-import { getConfig } from '@/utils/config';
 
-const config = getConfig();
-
-const api = GhostContentAPI({
-  url: config.ghostUrl,
-  key: config.ghostKey,
-  version: config.ghostVersion,
+// Create the API instance
+let api = GhostContentAPI({
+  url: process.env.NEXT_PUBLIC_GHOST_URL || '',
+  key: process.env.GHOST_CONTENT_API_KEY || '',
+  version: process.env.NEXT_PUBLIC_GHOST_VERSION || "v5.0"
 }) as {
   posts: {
-    browse: (options: { limit: string; include?: string[] }) => Promise<Post[]>;
+    browse: (options: { limit: string; page?: number; filter?: string; include?: string[] }) => Promise<{
+      posts: Post[];
+      meta: {
+        pagination: {
+          page: number;
+          limit: number;
+          pages: number;
+          total: number;
+          prev: number | null;
+          next: number | null;
+        }
+      }
+    }>;
     read: (options: { slug: string; include?: string[] }) => Promise<Post>;
   };
   tags: {
@@ -19,12 +29,38 @@ const api = GhostContentAPI({
   };
 };
 
-export async function getPosts(): Promise<Post[]> {
-  const posts = await api.posts.browse({
-    limit: 'all',
+export interface PostsResponse {
+  posts: Post[];
+  meta: {
+    pagination: {
+      page: number;
+      limit: number;
+      pages: number;
+      total: number;
+      prev: number | null;
+      next: number | null;
+    }
+  }
+}
+
+// For testing purposes
+export const setTestApi = (testApi: typeof api): void => {
+  api = testApi;
+};
+
+export async function getPosts(page = 1, limit = 10, tag?: string): Promise<PostsResponse> {
+  const options: any = {
+    limit: limit.toString(),
+    page,
     include: ['tags', 'authors'],
-  });
-  return posts;
+  }
+
+  if (tag) {
+    options.filter = `tag:${tag}`
+  }
+
+  const response = await api.posts.browse(options)
+  return response
 }
 
 export async function getPost(slug: string): Promise<Post> {

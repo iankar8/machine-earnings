@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2024-12-11T21:11:33.699Z",
+    "email": "ian@iankar.com",
+    "subscriptions": {
+      "weekly": true,
+      "essays": true,
+      "community": true
+    }
+  },
+  {
+    "timestamp": "2024-12-11T21:21:43.186Z",
+    "email": "ian@iankar.com",
+    "subscriptions": {
+      "weekly": false,
+      "essays": true,
+      "community": false
+    }
+  },
+  {
+    "timestamp": "2024-12-11T21:24:45.178Z",
+    "email": "ian@vol1ventures.com",
+    "subscriptions": {
+      "weekly": true,
+      "essays": true,
+      "community": true
+    }
+  },
+  {
+    "timestamp": "2024-12-11T22:24:06.373Z",
+    "email": "ian@arcanalabs.dev",
+    "subscriptions": {
+      "weekly": true,
+      "essays": true,
+      "community": true
+    }
+  }
+]

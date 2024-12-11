@@ -3,63 +3,160 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 142 84% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 142 84% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 142 84% 10%;
+    --muted-foreground: 142 84% 80%;
+    --accent: 142 84% 15%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 142 84% 45%;
+    --input: 142 84% 45%;
+    --ring: 142 84% 45%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    @apply bg-black text-green-500 antialiased;
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 1px #0f0,
-                 0 0 2px #0f0;
-  }
-  50% {
-    text-shadow: 0 0 2px #0f0,
-                 0 0 3px #0f0;
-  }
-  100% {
-    text-shadow: 0 0 1px #0f0,
-                 0 0 2px #0f0;
-  }
+:root {
+  --matrix-green: #22c55e;
+  --matrix-glow: 0 0 20px rgba(34, 197, 94, 0.5);
 }
 
-@keyframes scanline {
+body {
+  background-color: black;
+  color: var(--matrix-green);
+  font-family: 'Courier New', monospace;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+@keyframes matrixRain {
   0% {
     transform: translateY(-100%);
   }
   100% {
-    transform: translateY(100%);
+    transform: translateY(100vh);
   }
 }
 
-.glow-text {
-  animation: glow 2s ease-in-out infinite;
-  text-shadow: 0 0 2px #0f0;
-}
-
-.scanline::before {
-  content: "";
-  position: absolute;
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 2px;
-  background: rgba(0, 255, 0, 0.2);
-  animation: scanline 6s linear infinite;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+.matrix-character {
+  position: absolute;
+  color: var(--matrix-green);
+  text-shadow: var(--matrix-glow);
+  animation: matrixRain 20s linear infinite;
+  font-size: 1.2rem;
+  opacity: 0.8;
 }
 
-::-webkit-scrollbar-track {
-  background: #000;
+.glow-text {
+  color: var(--matrix-green);
+  text-shadow: var(--matrix-glow);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #0f0;
-  border-radius: 4px;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #0f0;
+.nav-link {
+  color: var(--matrix-green);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  text-shadow: var(--matrix-glow);
+  background-color: rgba(0, 255, 65, 0.1);
+}
+
+.content {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border: 1px solid var(--matrix-green);
+  box-shadow: var(--matrix-glow);
+}
+
+/* Enhanced button styles */
+.button-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(34, 197, 94, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.button-glow:hover::before {
+  left: 100%;
+}
+
+/* Card enhancements */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    45deg,
+    rgba(34, 197, 94, 0.3),
+    rgba(34, 197, 94, 0.1)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }

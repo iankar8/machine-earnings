@@ -2,19 +2,18 @@ import React, { useEffect, useRef } from 'react';
 
 interface Props {
   onComplete?: () => void;
-  shouldFreeze?: boolean;
 }
 
-interface Drop {
+interface Stream {
   x: number;
   y: number;
-  char: string;
   speed: number;
+  chars: string[];
 }
 
-export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Element {
+export function MatrixRain({ onComplete }: Props): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dropsRef = useRef<Drop[]>([]);
+  const streamsRef = useRef<Stream[]>([]);
   const animationFrameRef = useRef<number>();
 
   useEffect(() => {
@@ -24,56 +23,79 @@ export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Ele
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resizeCanvas = () => {
-      if (!canvas || !ctx) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initDrops();
+    const getRandomChar = (): string => {
+      const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      return chars[Math.floor(Math.random() * chars.length)] || '0';
     };
 
-    const initDrops = () => {
-      if (!canvas) return;
-      const drops: Drop[] = [];
-      const columns = Math.floor(canvas.width / 20);
-      
-      for (let i = 0; i < columns; i++) {
-        drops.push({
-          x: i * 20,
-          y: Math.random() * canvas.height,
-          char: String.fromCharCode(0x30A0 + Math.random() * 96),
-          speed: Math.random() * 2 + 1,
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStreams();
+    };
+
+    const initStreams = () => {
+      const streams: Stream[] = [];
+      const charWidth = 14; // Narrower character width
+      const spacing = charWidth * 2; // Closer columns
+      const streamCount = Math.floor(canvas.width / spacing);
+
+      for (let i = 0; i < streamCount; i++) {
+        const length = Math.floor(Math.random() * 35) + 25; // Longer streams
+        streams.push({
+          x: i * spacing,
+          y: Math.random() * canvas.height * 2 - canvas.height,
+          speed: 1.2, // Slower, more consistent speed
+          chars: Array(length).fill('').map(() => getRandomChar())
         });
       }
-      dropsRef.current = drops;
+      streamsRef.current = streams;
     };
 
     const draw = () => {
-      if (!canvas || !ctx) return;
+      // Darker fade for better contrast
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (!shouldFreeze) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
-      ctx.fillStyle = '#0F0';
-      ctx.font = '20px monospace';
-
-      dropsRef.current.forEach(drop => {
-        const char = String.fromCharCode(0x30A0 + Math.random() * 96);
-        ctx.fillText(char, drop.x, drop.y);
-
-        if (!shouldFreeze) {
-          drop.y += drop.speed;
-          if (drop.y > canvas.height) {
-            drop.y = 0;
-            drop.char = String.fromCharCode(0x30A0 + Math.random() * 96);
+      streamsRef.current.forEach(stream => {
+        stream.chars.forEach((char, i) => {
+          const y = Math.floor(stream.y - i * 14); // Tighter vertical spacing
+          if (y < canvas.height && y > 0) {
+            if (i === 0) {
+              // Much brighter lead character
+              ctx.font = '14px monospace';
+              ctx.fillStyle = 'rgba(220, 255, 220, 1)';
+              ctx.fillText(char, stream.x, y);
+            } else if (i < 5) {
+              // First few characters are brighter
+              ctx.font = '14px monospace';
+              const alpha = 0.8 - (i * 0.15);
+              ctx.fillStyle = `rgba(140, 255, 140, ${alpha})`;
+              ctx.fillText(char, stream.x, y);
+            } else {
+              // Rest fade out more quickly
+              ctx.font = '14px monospace';
+              const alpha = Math.max(0.1, 1 - (i * 0.05));
+              ctx.fillStyle = `rgba(0, 255, 70, ${alpha * 0.6})`;
+              ctx.fillText(char, stream.x, y);
+            }
           }
+        });
+
+        stream.y += stream.speed;
+        if (stream.y - (stream.chars.length * 14) > canvas.height) {
+          stream.y = -100 - Math.random() * 300; // More varied restart positions
+          stream.chars = Array(stream.chars.length).fill('').map(() => getRandomChar());
+        }
+
+        // Occasional character changes
+        if (Math.random() > 0.95) {
+          const idx = Math.floor(Math.random() * stream.chars.length);
+          stream.chars[idx] = getRandomChar();
         }
       });
 
-      if (!shouldFreeze) {
-        animationFrameRef.current = requestAnimationFrame(draw);
-      }
+      animationFrameRef.current = requestAnimationFrame(draw);
     };
 
     resizeCanvas();
@@ -82,7 +104,7 @@ export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Ele
 
     setTimeout(() => {
       onComplete?.();
-    }, 2000);
+    }, 7000);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -90,12 +112,12 @@ export function MatrixRain({ onComplete, shouldFreeze = false }: Props): JSX.Ele
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [shouldFreeze, onComplete]);
+  }, [onComplete]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full"
+      className="fixed inset-0 w-full h-full bg-black"
       style={{ zIndex: 0 }}
     />
   );

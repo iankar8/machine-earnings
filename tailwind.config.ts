@@ -1,68 +1,119 @@
 import type { Config } from 'tailwindcss';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
-const config: Config = {
+const config = {
+  darkMode: ['class'],
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
   ],
+  prefix: '',
   theme: {
-    extend: {
-      fontFamily: {
-        'press-start-2p': ['var(--font-press-start-2p)'],
-        'share-tech-mono': ['var(--font-share-tech-mono)'],
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px',
       },
+    },
+    extend: {
       colors: {
-        green: {
-          500: '#22c55e',
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
       typography: {
         DEFAULT: {
           css: {
-            color: '#22c55e',
+            color: 'hsl(var(--matrix-green))',
             a: {
-              color: '#22c55e',
+              color: 'hsl(var(--matrix-green))',
               '&:hover': {
-                color: '#16a34a',
+                color: 'hsl(var(--matrix-green))',
               },
-            },
-            h1: {
-              color: '#22c55e',
-            },
-            h2: {
-              color: '#22c55e',
-            },
-            h3: {
-              color: '#22c55e',
-            },
-            h4: {
-              color: '#22c55e',
             },
             strong: {
-              color: '#22c55e',
+              color: 'hsl(var(--matrix-green))',
+            },
+            h1: {
+              color: 'hsl(var(--matrix-green))',
+            },
+            h2: {
+              color: 'hsl(var(--matrix-green))',
+            },
+            h3: {
+              color: 'hsl(var(--matrix-green))',
+            },
+            h4: {
+              color: 'hsl(var(--matrix-green))',
             },
             code: {
-              color: '#22c55e',
-              backgroundColor: '#042f1c',
-              padding: '0.2em 0.4em',
-              borderRadius: '0.25rem',
+              color: 'hsl(var(--matrix-green))',
             },
-            pre: {
-              backgroundColor: '#042f1c',
-              code: {
-                backgroundColor: 'transparent',
-                padding: 0,
-              },
+            blockquote: {
+              color: 'hsl(var(--matrix-green))',
+              borderLeftColor: 'hsl(var(--matrix-green))',
             },
           },
         },
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
-};
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+} satisfies Config;
 
 export default config; 
