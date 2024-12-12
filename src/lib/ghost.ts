@@ -1,11 +1,13 @@
 import GhostContentAPI from '@tryghost/content-api';
+import axios from 'axios';
 import { Post, Tag } from '@/types/ghost';
 
-// Create the API instance
+// Create the API instance with axios adapter
 let api = GhostContentAPI({
   url: process.env.NEXT_PUBLIC_GHOST_URL || '',
   key: process.env.GHOST_CONTENT_API_KEY || '',
-  version: process.env.NEXT_PUBLIC_GHOST_VERSION || "v5.0"
+  version: process.env.NEXT_PUBLIC_GHOST_VERSION || "v5.0",
+  adapter: 'axios'
 }) as {
   posts: {
     browse: (options: { limit: string; page?: number; filter?: string; include?: string[] }) => Promise<{
