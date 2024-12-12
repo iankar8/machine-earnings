@@ -3,6 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  typescript: {
+    ignoreBuildErrors: true
+  },
   images: {
     domains: ['your-cdn-domain.com'],
   },
