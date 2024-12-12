@@ -44,21 +44,27 @@ export default function Home() {
   const [error, setError] = React.useState('')
 
   // Matrix rain effect setup
-  const [matrixColumns, setMatrixColumns] = React.useState<Array<{
+  const [matrixColumns, setMatrixColumns] = React.useState<{
     id: number;
     chars: string[];
     speed: number;
     opacity: number;
-  }>>([])
+  }[]>([])
 
   React.useEffect(() => {
     setMounted(true)
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*'.split('')
     const columns = Array.from({ length: 50 }, (_, i) => ({
       id: i,
-      chars: Array.from({ length: 25 }, () => characters[Math.floor(Math.random() * characters.length) % characters.length]),
+      chars: Array.from({ length: 25 }, () => {
+        const index = Math.floor(Math.random() * characters.length)
+        return characters[index]
+      }),
       speed: 1 + Math.random() * 2,
       opacity: 0.1 + Math.random() * 0.5
+    })).map(column => ({
+      ...column,
+      chars: column.chars.filter(char => char !== undefined) as string[]
     }))
     setMatrixColumns(columns)
   }, [])
@@ -140,16 +146,14 @@ export default function Home() {
         {matrixColumns.map((col) => (
           <div
             key={col.id}
-            className="absolute text-[var(--matrix-green)]"
+            className="absolute text-[var(--matrix-green)] matrix-character"
             style={{
               left: `${(col.id / matrixColumns.length) * 100}%`,
-              animation: `matrixRain ${col.speed}s linear infinite`,
+              animationDuration: `${col.speed * 5}s`,
               opacity: col.opacity
             }}
           >
-            {col.chars.map((char, i) => (
-              <div key={i} className="text-xl">{char}</div>
-            ))}
+            {col.chars.join('')}
           </div>
         ))}
       </div>
