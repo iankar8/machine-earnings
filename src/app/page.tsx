@@ -56,7 +56,7 @@ export default function Home() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*'
     const columns = Array.from({ length: 50 }, (_, i) => ({
       id: i,
-      chars: Array.from({ length: 25 }, () => characters[Math.floor(Math.random() * characters.length)]),
+      chars: Array.from({ length: 25 }, () => characters[Math.floor(Math.random() * characters.length)] || characters[0]),
       speed: 1 + Math.random() * 2,
       opacity: 0.1 + Math.random() * 0.5
     }))
