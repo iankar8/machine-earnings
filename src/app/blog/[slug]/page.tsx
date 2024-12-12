@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import { getPost } from '@/lib/ghost';
 import { ReadingProgress } from '@/components/ui/reading-progress';
